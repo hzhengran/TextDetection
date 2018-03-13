@@ -12,6 +12,7 @@
 		8B0D6B041EFA582B00544F3D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B0D6B021EFA582B00544F3D /* Main.storyboard */; };
 		8B0D6B061EFA582B00544F3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B0D6B051EFA582B00544F3D /* Assets.xcassets */; };
 		8B0D6B091EFA582B00544F3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B0D6B071EFA582B00544F3D /* LaunchScreen.storyboard */; };
+		94B9B3F02056979400E22D7C /* OCR.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 94B9B3EF2056979400E22D7C /* OCR.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		8B0D6B051EFA582B00544F3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B0D6B081EFA582B00544F3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8B0D6B0A1EFA582C00544F3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		94B9B3EF2056979400E22D7C /* OCR.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = OCR.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 		8B0D6AFD1EFA582B00544F3D /* Text Detection Starter Project */ = {
 			isa = PBXGroup;
 			children = (
+				94B9B3EF2056979400E22D7C /* OCR.mlmodel */,
 				8B0D6AFE1EFA582B00544F3D /* AppDelegate.swift */,
 				8B0D6B001EFA582B00544F3D /* ViewController.swift */,
 				8B0D6B021EFA582B00544F3D /* Main.storyboard */,
@@ -136,6 +139,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B0D6B011EFA582B00544F3D /* ViewController.swift in Sources */,
+				94B9B3F02056979400E22D7C /* OCR.mlmodel in Sources */,
 				8B0D6AFF1EFA582B00544F3D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -269,10 +273,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = YZP52RND5S;
+				DEVELOPMENT_TEAM = Y9DLZCYDS5;
 				INFOPLIST_FILE = "Text Detection Starter Project/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.appCoda.TextDetection;
+				PRODUCT_BUNDLE_IDENTIFIER = com.appCoda.TextDetection.ryanh;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -283,10 +287,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = YZP52RND5S;
+				DEVELOPMENT_TEAM = Y9DLZCYDS5;
 				INFOPLIST_FILE = "Text Detection Starter Project/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.appCoda.TextDetection;
+				PRODUCT_BUNDLE_IDENTIFIER = com.appCoda.TextDetection.ryanh;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

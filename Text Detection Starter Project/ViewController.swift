@@ -9,12 +9,22 @@
 import UIKit
 import AVFoundation
 import Vision
+import CoreML
 
 class ViewController: UIViewController {
     
     @IBOutlet weak var imageView: UIImageView!
     var session = AVCaptureSession()
     var requests = [VNRequest]()
+    lazy var ocrRequest: VNCoreMLRequest = {
+        do{
+            let model = try VNCoreMLModel(for:OCR().model)
+            return VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
+        }
+        catch{
+            fatalError("Cannot load model")
+        }
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,8 +80,8 @@ class ViewController: UIViewController {
         }
         
         let result = observations.map({$0 as? VNTextObservation})
-        
         DispatchQueue.main.async() {
+            print("\(Date()): dispatch queue...")
             self.imageView.layer.sublayers?.removeSubrange(1...)
             for region in result {
                 guard let rg = region else {
@@ -79,7 +89,7 @@ class ViewController: UIViewController {
                 }
                 
                 self.highlightWord(box: rg)
-                
+                self.doOCR(box: rg)
                 if let boxes = region?.characterBoxes {
                     for characterBox in boxes {
                         self.highlightLetters(box: characterBox)
@@ -140,6 +150,83 @@ class ViewController: UIViewController {
         
         imageView.layer.addSublayer(outline)
     }
+    func handleClassification(request: VNRequest, error: Error?)
+    {
+        guard let observations = request.results as? [VNClassificationObservation]
+            else {fatalError("unexpected result") }
+        guard let best = observations.first
+            else { fatalError("cant get best result")}
+        
+        //ON MAIN-QUEUE
+        DispatchQueue.main.async {
+            
+            //BEST.IDENTIFIER IS OUR PREDICTION WITH HIGHEST CONFIDENCE !
+            print("recognized: " + best.identifier)
+            
+        }
+    }
+    
+    func doOCR(box: VNTextObservation){
+        guard let boxes = box.characterBoxes else {
+            return
+        }
+        
+        var maxX: CGFloat = 9999.0
+        var minX: CGFloat = 0.0
+        var maxY: CGFloat = 9999.0
+        var minY: CGFloat = 0.0
+        
+        for char in boxes {
+            if char.bottomLeft.x < maxX {
+                maxX = char.bottomLeft.x
+            }
+            if char.bottomRight.x > minX {
+                minX = char.bottomRight.x
+            }
+            if char.bottomRight.y < maxY {
+                maxY = char.bottomRight.y
+            }
+            if char.topRight.y > minY {
+                minY = char.topRight.y
+            }
+        }
+        
+        let xCord = maxX * imageView.frame.size.width
+        let yCord = (1 - minY) * imageView.frame.size.height
+        let width = (minX - maxX) * imageView.frame.size.width
+        let height = (minY - maxY) * imageView.frame.size.height
+        
+        guard let img = self.imageView.image
+            else{
+                return
+        }
+        
+        guard let inputImg:CIImage = CIImage(image: img)
+            else{
+                return
+        }
+        
+//        //LETS LOAD AN IMAGE FROM RESOURCE (TRY ANOTHER ONE ...)
+//        let ourFirstImage:UIImage = UIImage(named: "7.PNG")!
+//
+//        //WE NEED AN CIIMAGE - NO NEED TO SCALE
+//        let ourInput:CIImage = CIImage(image:ourFirstImage)!
+//
+        //PREPARE THE HANDLER
+        let handler = VNImageRequestHandler(ciImage: inputImg.cropped(to: CGRect(x: xCord, y: yCord, width: width, height: height)), options: [:])
+        
+        //SOME OPTIONS (TO PLAY WITH..)
+        self.ocrRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.scaleFill
+        
+        //FEED IT TO THE QUEUE
+        DispatchQueue.global(qos: .userInteractive).async {
+            do {
+                try  handler.perform([self.ocrRequest])
+            } catch {
+                print ("Error")
+            }
+        }
+    }
 }
 
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -154,7 +241,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             requestOptions = [.cameraIntrinsics:camData]
         }
         
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: 6, options: requestOptions)
+        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: CGImagePropertyOrientation(rawValue: 6)!, options: requestOptions)
         
         do {
             try imageRequestHandler.perform(self.requests)
